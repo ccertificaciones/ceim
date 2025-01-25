@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificaciones</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <link rel="icon" type="image/png" href="https://certificaciones.ceim.cl/favicon.ico">
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <img src="https://certificaciones.ceim.cl/images/LOGO%20CEIMAS%20150x98.png" width="150" height="98">
+        </div>
+        <div class="row">
+            <h1>Validador Documentos</h1>
+        </div>
+        <div class="row">
+            <form id="buscador" class="form-inline">
+                <div class="form-group">
+                    <label class="col-md-4 control-label">Tipo Documento</label>
+                    <div class="col-md-6">
+                        <select name="tipo" class="form-control" id="tipo">
+                            <option value="0" selected="selected">Seleccionar</option>
+                            <option value="1">Certificado Acreditación Competencias</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-3 control-label">Código</label>
+                    <div class="col-md-3">
+                        <input name="codigo" type="text" id="codigo" size="20" maxlength="5" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary btn-sm">Buscar</button>
+                </div>
+            </form>
+        </div>
+        <hr>
+        <div class="row" id="resultado" style="display:none;">
+            <div id="mensaje-validacion" class="alert alert-danger" role="alert" style="display:none;">
+                <h1>El documento NO es válido.</h1>
+                <p>Por favor, seleccione un tipo de documento válido.</p>
+            </div>
+            <div id="mensaje-exito" class="alert alert-success" role="alert" style="display:none;">
+                <h1>El documento existe y es válido!</h1>
+            </div>
+            <iframe id="visorPDF" style="width:99%; height:600px;" frameborder="0"></iframe>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3">
+                    <address>
+                        <br>
+                        <strong>Casa Matriz</strong><br>
+                        Av. Pedro Aguirre Cerda 8280, Antofagasta<br>
+                        Fono +56 55 2456000
+                    </address>
+                </div>
+                <div class="col-md-4">
+                    <address>
+                        <br>
+                        <strong>Sede Iquique</strong><br>
+                        Eleuterio Ramirez 428, Iquique<br>
+                        Fono +56 55 2456154
+                    </address>
+                </div>
+                <div class="col-md-5">
+                    Desarrollado por el Departamento de Sistemas y Tecnología de la Información (DSTI) - CEIM.<br>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Función para obtener parámetros de la URL
+        function getQueryParam(param) {
+            let urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        // Cargar el documento si el código y el tipo están en la URL
+        window.onload = function() {
+            let codigo = getQueryParam('codigo');
+            let tipo = getQueryParam('tipo');
+            
+            if (codigo && tipo && tipo !== "0") {
+                document.getElementById('codigo').value = codigo;
+                document.getElementById('tipo').value = tipo;
+                mostrarDocumento();
+            }
+        };
+
+        // Manejador del formulario para búsqueda manual
+        document.getElementById('buscador').addEventListener('submit', function(event) {
+            event.preventDefault();
+            mostrarDocumento();
+        });
+
+        // Función para validar y mostrar el documento
+        function mostrarDocumento() {
+            let codigo = document.getElementById('codigo').value.trim();
+            let tipo = document.getElementById('tipo').value;
+            
+            if (tipo === "0") {
+                document.getElementById('resultado').style.display = 'block';
+                document.getElementById('mensaje-validacion').style.display = 'block';
+                document.getElementById('mensaje-exito').style.display = 'none';
+                document.getElementById('visorPDF').style.display = 'none';
+            } else if (codigo) {
+                document.getElementById('resultado').style.display = 'block';
+                document.getElementById('mensaje-validacion').style.display = 'none';
+                document.getElementById('mensaje-exito').style.display = 'block';
+                document.getElementById('visorPDF').src = 'documentos/' + codigo + '.pdf';
+                document.getElementById('visorPDF').style.display = 'block';
+            } else {
+                alert('Por favor, ingrese un código válido.');
+            }
+        }
+    </script>
+</body>
+</html>
